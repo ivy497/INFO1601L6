@@ -1,0 +1,29 @@
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-24_05"
+
+[unitTest]
+language = "python3"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix"]
+
+[deployment]
+run = ["python", "-m", "http.server", "8080", "-d", "site"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 8080
+externalPort = 80
+
+[workflows]
+runButton = "Serve"
+
+[[workflows.workflow]]
+name = "Serve"
+author = 1625439
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -m http.server 8080 -d site"

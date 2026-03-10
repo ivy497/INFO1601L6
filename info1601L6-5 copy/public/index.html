@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <title>Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-wrapper teal" style="padding-left: 10px">
+        <a href="#!" class="brand-logo">Ajax Demo</a>
+      </div>
+    </nav>
+
+    <main
+      class="row"
+      style="height: 500px; overflow-y: scroll"
+      style="padding: 40px"
+    >
+      <table>
+        <thead>
+          <tr>
+            <th>#ID</th>
+            <th>name</th>
+            <th>Type</th>
+            <th>website</th>
+          </tr>
+        </thead>
+        <tbody id="result"></tbody>
+      </table>
+    </main>
+    <pre
+      id="details"
+      style="
+        background-color: gainsboro;
+        max-height: 28vh;
+        margin: 0px;
+        padding: 0px 8px;
+      "
+    ></pre>
+    <script>
+      function drawTable(records) {
+        let result = document.querySelector('#result');
+        //add html code inside of result
+        let html = ''; // create html string
+        for (let record of records) {
+          //build html string
+          html += `<tr id="${record.id}">
+                <td>${record.id}</td>
+                <td>${record.name}</td>
+                <td>${record.brewery_type}</td>
+                <td><a href="#${record.id}" onclick="getData('https://api.openbrewerydb.org/v1/breweries/${record.id}', drawDetails)" >View More Details</a></td>    
+              </tr>`;
+        }
+        result.innerHTML = html; //add html string to DOM
+      }
+
+      function drawDetails(record) {
+        const section = document.querySelector("#details");
+        details.innerHTML = `${JSON.stringify(record, null, 2)}`;
+        details.innerHTML = `<ul>
+              <li>State: ${record.state}</li>
+              <li>Country: ${record.country}</li>
+              <li>Phone: ${record.phone}</li>
+        </ul>`;
+      }
+
+      //function MUST be declared async
+      async function getData(url, renderFun) {
+        try {
+          let response = await fetch(url); //1. Send http request and get response
+          let result = await response.json(); //2. Get data from response
+          renderFun(result); // 3. Do something with the data
+        } catch (e) {
+          console.log(e); //catch and log any errors
+        }
+      }
+
+      getData("https://api.openbrewerydb.org/v1/breweries", drawTable);
+    </script>
+  </body>
+</html>
